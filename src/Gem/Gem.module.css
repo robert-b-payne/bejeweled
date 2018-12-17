@@ -1,0 +1,20 @@
+.Gem {
+  /* width: 70px;
+  height: 70px; */
+  /* background-color: red; */
+  position: absolute;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  /* border: solid red 1px; */
+  transition: all 0.3s ease-out;
+}
+
+.Border {
+  /* border: dotted rgb(66, 244, 89, 1) 2px; */
+  transition: all 0.2s ease-out;
+}

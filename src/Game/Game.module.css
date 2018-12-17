@@ -1,0 +1,30 @@
+.gameContainer {
+  text-align: center;
+  margin: auto;
+  padding: 20px;
+  /* display: flex;
+  flex-direction: row;
+  justify-content: flex-end; */
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  border-radius: 25px;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  /* border: solid rgba(77, 77, 77, 0.8) 1px; */
+  /* border: solid red 1px; */
+}
+
+.tilesContainer {
+  /* background-color: blue; */
+  position: relative;
+  /* border: solid orange 1px; */
+}
+/* 
+.tilesOuterContainer {
+  position: absolute;
+  right: 10px;
+  border: solid green 1px;
+  display: inline-block;
+} */
