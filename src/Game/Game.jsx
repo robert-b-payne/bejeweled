@@ -91,7 +91,7 @@ class Game extends Component {
     //   }, 1000);
     setTimeout(() => {
       this.searchAll();
-    }, 250);
+    }, 0); //250
   }
 
   copyArray = a => {
@@ -239,7 +239,7 @@ class Game extends Component {
     this.swapPositions(a, b);
     setTimeout(() => {
       this.swapPositions(a, b);
-    }, 350);
+    }, 0); //350
   };
 
   moveTo = (gemId, location, onLevel) => {
@@ -649,8 +649,8 @@ class Game extends Component {
         this.clearMatchedGems();
         this.clearMatchedOnLevel();
         this.setState({ clickHandlerActive: false });
-      }, 1); //time for old gems to reposition
-    }, 300); //time for gems to move and shrink
+      }, 0); //time for old gems to reposition (1)
+    }, 0); //time for gems to move and shrink (300)
 
     //change gemId in level array to 'empty'
     //remove gem with gemId from gems array
@@ -733,7 +733,7 @@ class Game extends Component {
       //   this.clearMatchedOnLevel();
       setTimeout(() => {
         this.searchAll();
-      }, 800);
+      }, 0); //800
     } else {
       this.setState({ clickHandlerActive: false });
     }
@@ -773,7 +773,7 @@ class Game extends Component {
       ) {
         setTimeout(() => {
           this.swapPositions(tempActiveTile, index);
-        }, 350);
+        }, 0); //350
       }
       //   console.log("-=======matching gems=======-");
       //   console.log(this.searchState.matchedGems);
@@ -785,7 +785,7 @@ class Game extends Component {
       this.setState({ clickHandlerActive: true });
       setTimeout(() => {
         this.searchAll();
-      }, 325);
+      }, 0); //325
       // setTimeout(() => {
       //   this.handleMatched();
       //   setTimeout(() => {
