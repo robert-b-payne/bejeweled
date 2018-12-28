@@ -123,7 +123,8 @@ class Gem extends Component {
           width: this.props.size,
           left: this.props.pos.left,
           top: this.props.pos.top,
-          transform: this.props.dead ? "scale(0)" : "scale(1)"
+          transform: this.props.dead ? "scale(0)" : "scale(1)",
+          transition: "all 0s ease-out"
         }}
         onClick={() => this.props.clickHandler(this.props.index)}
       >

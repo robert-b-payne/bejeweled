@@ -723,11 +723,11 @@ class Game extends Component {
     }
 
     if (found) {
-      console.log(
-        "this.searchState.matchedGems has " +
-          this.searchState.matchedGems.length +
-          " elements!"
-      );
+      // console.log(
+      //   "this.searchState.matchedGems has " +
+      //     this.searchState.matchedGems.length +
+      //     " elements!"
+      // );
       console.log(this.searchState.matchedGems);
       this.handleMatched();
       //   this.clearMatchedOnLevel();
