@@ -77,7 +77,7 @@ class Game extends Component {
   componentDidMount() {
     setTimeout(() => {
       this.searchAll();
-    }, 250); //250
+    }, 1);
   }
 
   copyArray = a => {
@@ -283,13 +283,6 @@ class Game extends Component {
     } else return false;
   };
 
-  //   countRecursive = (loc, dir, gemType, count) => {
-  //     let adjacentTile = this.getAdjacentTile(loc, dir);
-  //     if (adjacentTile && this.getGemType(adjacentTile) === gemType)
-  //       return this.countRecursive(adjacentTile, dir, gemType, count + 1);
-  //     else return count;
-  //   };
-
   getSearchStatus = loc => {
     return this.searchState[loc[0]][loc[1]];
   };
@@ -459,25 +452,6 @@ class Game extends Component {
       newGemId++;
     });
 
-    // this.searchState.matchedGems.forEach(group => {
-    //   //   console.log(group);
-    //   group.forEach(gem => {
-    //     console.log("attempting to create new gem for gem: ");
-    //     console.log(gem);
-
-    //     newGems.push({
-    //       gemId: newGemId,
-    //       gemType: Math.floor(Math.random() * 7),
-    //       selected: false,
-    //       index: [-1, gem[1]],
-    //       dead: false
-    //     });
-    //     newGemId++;
-    //     // console.log(newGems);
-    //     // }
-    //   });
-    // });
-
     newGems.forEach(gem => {
       gemsCopy.push(gem);
     });
@@ -564,17 +538,6 @@ class Game extends Component {
     return sortedGems;
   };
 
-  //   initializeNewGems = () => {
-  //     gemsCopy = this.copyArray(this.state.gems);
-  //     this.state.newGems.forEach(col => {
-  //         if(col.length>0){
-  //             col.forEach((gem)=>{
-  //                 gem.index =
-  //             });
-  //         }
-  //     });
-  //   };
-
   positionNewGems = () => {
     console.log("-==========positionNewGems==========-");
     let firstEmpty;
@@ -658,26 +621,6 @@ class Game extends Component {
     //put gems in level array and gems array
     //move new gems to the top
   };
-
-  //probably don't need
-  //   clearBreadcrumbs = () => {
-  //     for (let i = 0; i < this.state.height; i++) {
-  //       for (let j = 0; j < this.state.width; j++) {
-  //         this.searchState.breadcrumbs[i][j] = false;
-  //       }
-  //     }
-  //   };
-
-  //   countAdjacent = loc => {
-  //     let gemType = this.getGemType(loc);
-  //     return (
-  //       this.countRecursive(loc, "left", gemType, 0) +
-  //       this.countRecursive(loc, "right", gemType, 0) +
-  //       this.countRecursive(loc, "up", gemType, 0) +
-  //       this.countRecursive(loc, "down", gemType, 0) +
-  //       1
-  //     );
-  //   };
 
   //delete index references to matched gems
   clearMatchedGems = () => {
@@ -823,14 +766,6 @@ class Game extends Component {
         }}
         className={classes.gameContainer}
       >
-        {/* <div
-
-          className={classes.tilesOuterContainer}
-          style={{
-            width: this.state.width * this.state.tileSize + "px",
-            height: this.state.height * this.state.tileSize + "px"
-          }}
-        > */}
         <div
           className={classes.tilesContainer}
           style={{
