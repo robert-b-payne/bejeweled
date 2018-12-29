@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Gem from "../Gem/Gem";
 import Tile from "../Tile/Tile";
 import classes from "./Game.module.css";
+import Reset from "../Reset/Reset";
 
 import Background_Image from "../assets/space_darkened.png";
 
@@ -25,32 +26,74 @@ class Game extends Component {
   };
 
   searchState = {
-    breadcrumbs: [],
     matchedGems: [], //2d location of gems in a group
     emptyTiles: []
   };
 
   constructor() {
     super();
-    this.state.marginLeft =
+    // this.state.marginLeft =
+    //   this.state.tileSize * this.state.height * 0.875 - 0.5 * this.state.margin;
+    // //initialize level array
+    // let row = [];
+    // let checkerboardRow = [];
+    // this.state.level = [];
+    // this.state.checkerboard = [];
+    // let breadcrumbsRow = [];
+    // let matchedRow = [];
+    // let k = 0;
+    // for (let i = 0; i < this.state.height; i++) {
+    //   row = [];
+    //   checkerboardRow = [];
+    //   breadcrumbsRow = [];
+    //   matchedRow = [];
+    //   for (let j = 0; j < this.state.width; j++) {
+    //     breadcrumbsRow.push(false);
+    //     matchedRow.push(false);
+    //     this.state.gems.push({
+    //       gemId: k,
+    //       gemType: Math.floor(Math.random() * 7),
+    //       selected: false,
+    //       index: [i, j],
+    //       dead: false
+    //     });
+    //     row.push({
+    //       gemId: k
+    //     });
+    //     checkerboardRow.push({
+    //       color: j % 2 ^ i % 2 ? "white" : "black"
+    //     });
+    //     k++;
+    //   }
+    //   this.state.level.push(row);
+    //   this.state.checkerboard.push(checkerboardRow);
+    //   this.state.matchedOnLevel.push(matchedRow);
+    // }
+    this.reset(true);
+    // console.log("constructor");
+    // console.log(this.state.matchedOnLevel);
+  }
+
+  reset = constructor => {
+    console.log("reset method");
+    let marginLeft =
       this.state.tileSize * this.state.height * 0.875 - 0.5 * this.state.margin;
     //initialize level array
     let row = [];
     let checkerboardRow = [];
-    this.state.level = [];
-    this.state.checkerboard = [];
-    let breadcrumbsRow = [];
+    let level = [];
+    let checkerboard = [];
     let matchedRow = [];
+    let matchedOnLevel = [];
     let k = 0;
+    let gems = [];
     for (let i = 0; i < this.state.height; i++) {
       row = [];
       checkerboardRow = [];
-      breadcrumbsRow = [];
       matchedRow = [];
       for (let j = 0; j < this.state.width; j++) {
-        breadcrumbsRow.push(false);
         matchedRow.push(false);
-        this.state.gems.push({
+        gems.push({
           gemId: k,
           gemType: Math.floor(Math.random() * 7),
           selected: false,
@@ -65,20 +108,58 @@ class Game extends Component {
         });
         k++;
       }
-      this.state.level.push(row);
-      this.state.checkerboard.push(checkerboardRow);
-      this.state.matchedOnLevel.push(matchedRow);
-      this.searchState.breadcrumbs.push(breadcrumbsRow);
+      level.push(row);
+      checkerboard.push(checkerboardRow);
+      matchedOnLevel.push(matchedRow);
     }
-    console.log("constructor");
-    console.log(this.state.matchedOnLevel);
-  }
+    console.log("level");
+    console.log(level);
+    console.log("gems");
+    console.log(gems);
+    console.log("checkerboard");
+    console.log(checkerboard);
+    console.log("marginLeft");
+    console.log(marginLeft);
+    console.log("matchedOnLevel");
+    console.log(matchedOnLevel);
+    if (constructor) {
+      this.state.level = level;
+      this.state.gems = gems;
+      this.state.checkerboard = checkerboard;
+      this.state.marginLeft = marginLeft;
+      this.state.matchedOnLevel = matchedOnLevel;
+      setTimeout(() => {
+        this.searchAll();
+      }, 0);
+      // this.searchAll();
+    } else {
+      this.setState(
+        {
+          level: level,
+          gems: gems,
+          checkerboard: checkerboard,
+          marginLeft: marginLeft,
+          matchedOnLevel: matchedOnLevel
+        },
+        () => {
+          setTimeout(() => {
+            this.searchAll();
+          }, 0);
+        }
+      );
+    }
+  };
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.searchAll();
-    }, 1);
-  }
+  resetHandler = () => {
+    console.log("resetHandler");
+    this.setState({ animate: false, displayGems: false }, this.reset(false));
+  };
+
+  // componentDidMount() {
+  //   setTimeout(() => {
+  //     this.searchAll();
+  //   }, 1);
+  // }
 
   copyArray = a => {
     let copiedArray = a.map(x => {
@@ -250,12 +331,12 @@ class Game extends Component {
     let gemId = this.state.level[index[0]][index[1]].gemId;
     let gemIndex = this.getGemIndex(gemId);
     let gemsCopy = this.copyArray(this.state.gems);
-    console.log("gemId");
-    console.log(gemId);
-    console.log("gemsCopy");
-    console.log(gemsCopy);
-    console.log("gemIndex");
-    console.log(gemIndex);
+    // console.log("gemId");
+    // console.log(gemId);
+    // console.log("gemsCopy");
+    // console.log(gemsCopy);
+    // console.log("gemIndex");
+    // console.log(gemIndex);
     gemsCopy[gemIndex].selected = isSelected;
     let activeTile = isSelected ? index : false;
     this.setState({ gems: gemsCopy, activeTile: activeTile });
@@ -268,6 +349,8 @@ class Game extends Component {
     // console.log(this.state.gems);
 
     let gemIndex = this.getGemIndex(this.state.level[index[0]][index[1]].gemId);
+    // console.log("gemIndex");
+    // console.log(gemIndex);
     return this.state.gems[gemIndex].gemType;
   };
 
@@ -593,7 +676,7 @@ class Game extends Component {
       this.positionNewGems();
       this.clearMatchedGems();
       this.clearMatchedOnLevel();
-      this.setState({ clickHandlerActive: false });
+      // this.setState({ clickHandlerActive: false });
     } else {
       setTimeout(() => {
         //   debugger;
@@ -638,7 +721,7 @@ class Game extends Component {
   };
 
   searchAll = () => {
-    this.setState({ clickHandlerActive: true });
+    if (this.state.animate) this.setState({ clickHandlerActive: true });
     console.log("-====================searchAll====================-");
     let found = false;
     for (let i = 0; i < this.state.height; i++) {
@@ -744,6 +827,7 @@ class Game extends Component {
   };
 
   render() {
+    console.log("rendering . . . ");
     let gemArray = this.initializeGems();
     let checkerboard = this.drawCheckerboard();
     // let tileArray =
@@ -766,6 +850,7 @@ class Game extends Component {
         }}
         className={classes.gameContainer}
       >
+        <Reset resetHandler={this.resetHandler} />
         <div
           className={classes.tilesContainer}
           style={{
@@ -776,7 +861,6 @@ class Game extends Component {
           {checkerboard}
           {this.state.displayGems ? gemArray : null}
         </div>
-        {/* </div> */}
       </div>
     );
   }
