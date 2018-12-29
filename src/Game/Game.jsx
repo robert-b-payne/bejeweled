@@ -73,16 +73,6 @@ class Game extends Component {
       checkerboard.push(checkerboardRow);
       matchedOnLevel.push(matchedRow);
     }
-    console.log("level");
-    console.log(level);
-    console.log("gems");
-    console.log(gems);
-    console.log("checkerboard");
-    console.log(checkerboard);
-    console.log("marginLeft");
-    console.log(marginLeft);
-    console.log("matchedOnLevel");
-    console.log(matchedOnLevel);
     if (constructor) {
       this.state.level = level;
       this.state.gems = gems;
