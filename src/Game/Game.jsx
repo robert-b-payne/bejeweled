@@ -32,46 +32,7 @@ class Game extends Component {
 
   constructor() {
     super();
-    // this.state.marginLeft =
-    //   this.state.tileSize * this.state.height * 0.875 - 0.5 * this.state.margin;
-    // //initialize level array
-    // let row = [];
-    // let checkerboardRow = [];
-    // this.state.level = [];
-    // this.state.checkerboard = [];
-    // let breadcrumbsRow = [];
-    // let matchedRow = [];
-    // let k = 0;
-    // for (let i = 0; i < this.state.height; i++) {
-    //   row = [];
-    //   checkerboardRow = [];
-    //   breadcrumbsRow = [];
-    //   matchedRow = [];
-    //   for (let j = 0; j < this.state.width; j++) {
-    //     breadcrumbsRow.push(false);
-    //     matchedRow.push(false);
-    //     this.state.gems.push({
-    //       gemId: k,
-    //       gemType: Math.floor(Math.random() * 7),
-    //       selected: false,
-    //       index: [i, j],
-    //       dead: false
-    //     });
-    //     row.push({
-    //       gemId: k
-    //     });
-    //     checkerboardRow.push({
-    //       color: j % 2 ^ i % 2 ? "white" : "black"
-    //     });
-    //     k++;
-    //   }
-    //   this.state.level.push(row);
-    //   this.state.checkerboard.push(checkerboardRow);
-    //   this.state.matchedOnLevel.push(matchedRow);
-    // }
     this.reset(true);
-    // console.log("constructor");
-    // console.log(this.state.matchedOnLevel);
   }
 
   reset = constructor => {
