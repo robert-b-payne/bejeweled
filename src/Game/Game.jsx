@@ -14,7 +14,7 @@ class Game extends Component {
     checkerboard: null,
     height: 8,
     width: 8,
-    tileSize: 80,
+    tileSize: 65,
     margin: 0,
     marginLeft: 0,
     activeTile: false, //contains 2d index of which tile is active
