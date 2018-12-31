@@ -3,6 +3,7 @@ import Gem from "../Gem/Gem";
 import Tile from "../Tile/Tile";
 import classes from "./Game.module.css";
 import Reset from "../Reset/Reset";
+import HintButton from "../HintButton/HintButton";
 
 import Background_Image from "../assets/space_darkened.png";
 
@@ -27,7 +28,8 @@ class Game extends Component {
 
   searchState = {
     matchedGems: [], //2d location of gems in a group
-    emptyTiles: []
+    emptyTiles: [],
+    potentialMoves: []
   };
 
   constructor() {
@@ -354,10 +356,53 @@ class Game extends Component {
     this.setState({ matchedOnLevel: newMatchedOnLevel });
   };
 
+  // initPotentialMoves = () => {
+  //   let potentialMoves = [];
+  //   let potentialMovesRow = []
+  //   for(let i=0; i<this.state.height; i++){
+  //     for(let j=0; j<this.state.width; j++){
+  //       potentialMoves
+  //     }
+  //   }
+  // }
+
+  clearPotentialMoves = () => {
+    this.searchState.potentialMoves = [];
+  };
+
+  findMoves = () => {
+    for (let i = 0; i < this.state.height; i++) {
+      for (let j = 0; j < this.state.width; j++) {
+        let loc = [i, j];
+        if (
+          this.findMove(loc, "up") ||
+          this.findMove(loc, "down") ||
+          this.findMove(loc, "left") ||
+          this.findMove(loc, "right")
+        ) {
+          this.searchState.potentialMoves.push(loc);
+        }
+      }
+    }
+    console.log("====================findMoves====================");
+    console.log(this.searchState.potentialMoves);
+  };
+
+  findMove = (loc, dir) => {
+    let gemType = this.getGemType(loc);
+    let adjacentTile = this.getAdjacentTile(loc, dir);
+    if (adjacentTile) {
+      if (this.getMatchedGroup(adjacentTile, gemType, true)) {
+        console.log("moveFound: move " + loc + " to " + adjacentTile);
+        return true;
+      }
+    } else return false;
+  };
+
   //searches for a group of matching gems adjacent to loc
   //puts array of matching gem 2d index values into searchState.matchedGems
-  getMatchedGroup = loc => {
-    let gemType = this.getGemType(loc);
+  getMatchedGroup = (loc, gemType, findMoves) => {
+    if (!gemType) gemType = this.getGemType(loc);
     //horitontal
     let leftGems = this.getMatchingGemsInDir(loc, "left", gemType, []);
     let rightGems = this.getMatchingGemsInDir(loc, "right", gemType, []);
@@ -367,24 +412,26 @@ class Game extends Component {
     let bottomGems = this.getMatchingGemsInDir(loc, "down", gemType, []);
     let verticalGems = topGems.concat(bottomGems);
 
-    if (horizontalGems.length >= 2 && verticalGems.length >= 2) {
-      let matchedGems = verticalGems.concat(horizontalGems);
-      matchedGems.push(loc);
-      this.searchState.matchedGems.push(matchedGems);
-      this.setMatchedOnLevel(matchedGems);
-      return matchedGems;
-    } else if (horizontalGems.length >= 2) {
-      horizontalGems.push(loc);
-      this.searchState.matchedGems.push(horizontalGems);
-      this.setMatchedOnLevel(horizontalGems);
-      return horizontalGems;
-    } else if (verticalGems.length >= 2) {
-      verticalGems.push(loc);
-      this.searchState.matchedGems.push(verticalGems);
-      this.setMatchedOnLevel(verticalGems);
-      return verticalGems;
-    }
-    return false;
+    if (!findMoves) {
+      if (horizontalGems.length >= 2 && verticalGems.length >= 2) {
+        let matchedGems = verticalGems.concat(horizontalGems);
+        matchedGems.push(loc);
+        this.searchState.matchedGems.push(matchedGems);
+        this.setMatchedOnLevel(matchedGems);
+        return matchedGems;
+      } else if (horizontalGems.length >= 2) {
+        horizontalGems.push(loc);
+        this.searchState.matchedGems.push(horizontalGems);
+        this.setMatchedOnLevel(horizontalGems);
+        return horizontalGems;
+      } else if (verticalGems.length >= 2) {
+        verticalGems.push(loc);
+        this.searchState.matchedGems.push(verticalGems);
+        this.setMatchedOnLevel(verticalGems);
+        return verticalGems;
+      }
+      return false;
+    } else return horizontalGems.length >= 2 || verticalGems.length >= 2;
   };
 
   shrinkMatched = () => {
@@ -777,6 +824,12 @@ class Game extends Component {
     // console.log(this.getMatchedGroup(index));
   };
 
+  hintHandler = () => {
+    console.log("hintHandler");
+    this.findMoves();
+    this.clearPotentialMoves();
+  };
+
   render() {
     console.log("rendering . . . ");
     let gemArray = this.initializeGems();
@@ -801,6 +854,7 @@ class Game extends Component {
         }}
         className={classes.gameContainer}
       >
+        <HintButton clickHandler={this.hintHandler} />
         <Reset resetHandler={this.resetHandler} />
         <div
           className={classes.tilesContainer}
