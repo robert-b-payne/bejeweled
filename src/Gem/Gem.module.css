@@ -2,7 +2,7 @@
   /* width: 70px;
   height: 70px; */
   /* background-color: red; */
-  position: absolute;
+  /* position: absolute; */
   background-size: 100% 100%;
   background-repeat: no-repeat;
   display: flex;
@@ -17,4 +17,14 @@
 .Border {
   /* border: dotted rgb(66, 244, 89, 1) 2px; */
   transition: all 0.2s ease-out;
+  display: inline-block;
+}
+
+.OuterContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
 }

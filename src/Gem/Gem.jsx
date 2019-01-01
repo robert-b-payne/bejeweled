@@ -147,31 +147,13 @@ class Gem extends Component {
 
     return (
       <span
-        className={classes.Gem}
+        className={classes.OuterContainer}
         style={{
-          backgroundImage: "url('" + gem + "')",
-          backgroundPosition: "center",
-          backgroundSize:
-            this.props.size * 0.5 + "px " + this.props.size * 0.5 + "px",
-          height: this.props.size,
-          width: this.props.size,
           left: this.props.pos.left,
-          top: this.props.pos.top,
-          transform: this.props.dead
-            ? "scale(0)"
-            : this.props.hint
-            ? "scale(" + this.state.gemScale + ")"
-            : "scale(1)",
-          //   +
-          //   " rotate(" +
-          //   this.state.gemRotate +
-          //   "deg)"
-          // : "scale(1)",
-          transition: "all 0.3s ease-out"
+          top: this.props.pos.top
         }}
-        onClick={() => this.props.clickHandler(this.props.index)}
       >
-        <span
+        <span //border
           className={selectedClass}
           style={{
             height: this.props.size * this.state.width,
@@ -179,7 +161,33 @@ class Gem extends Component {
             border: this.state.cursorOn ? this.state.border : "0px solid black"
             // borderRadius: "50px"
           }}
-        />
+        >
+          <span
+            className={classes.Gem}
+            style={{
+              backgroundImage: "url('" + gem + "')",
+              backgroundPosition: "center",
+              backgroundSize:
+                this.props.size * 0.5 + "px " + this.props.size * 0.5 + "px",
+              height: this.props.size,
+              width: this.props.size,
+              // left: this.props.pos.left,
+              // top: this.props.pos.top,
+              transform: this.props.dead
+                ? "scale(0)"
+                : this.props.hint
+                ? "scale(" + this.state.gemScale + ")"
+                : "scale(1)",
+              //   +
+              //   " rotate(" +
+              //   this.state.gemRotate +
+              //   "deg)"
+              // : "scale(1)",
+              transition: "all 0.3s ease-out"
+            }}
+            onClick={() => this.props.clickHandler(this.props.index)}
+          />
+        </span>
       </span>
     );
   }
