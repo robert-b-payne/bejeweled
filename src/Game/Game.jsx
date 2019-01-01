@@ -8,7 +8,6 @@ import Background_Image from "../assets/space_darkened.png";
 
 class Game extends Component {
   state = {
-    // level: null,
     gems: [],
     newGems: [],
     checkerboard: null,
