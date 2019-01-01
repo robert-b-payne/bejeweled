@@ -37,7 +37,17 @@ class Gem extends Component {
     opacity: 1,
     width: null,
     widthLower: 0.65,
-    widthUpper: 0.75
+    widthUpper: 0.75,
+    gemScale: 1, //scaling for hint
+    gemMaxScale: 1.2,
+    gemRotate: 0
+  };
+
+  hintState = {
+    hintTimerId: null,
+    hintOn: false,
+    gemRotateLeft: -10,
+    gemRotateRight: 10
   };
 
   constructor() {
@@ -78,6 +88,30 @@ class Gem extends Component {
         border: "dotted rgba(66, 244, 89, 1) 2px"
       });
       //clear cursorOn
+    }
+
+    //animate hint
+    if (this.props.hint && !this.hintState.hintOn) {
+      this.hintState.hintOn = true;
+      this.hintState.timerId = setInterval(() => {
+        if (this.state.gemScale === this.state.gemMaxScale) {
+          this.setState({ gemScale: 1 });
+        } else this.setState({ gemScale: this.state.gemMaxScale });
+        setTimeout(() => {
+          if (this.state.gemScale === this.state.gemMaxScale) {
+            this.setState({ gemScale: 1 });
+          } else this.setState({ gemScale: this.state.gemMaxScale });
+        }, 280);
+      }, 850);
+      //   if (this.state.gemRotate !== this.hintState.gemRotateRight) {
+      //     this.setState({ gemRotate: this.hintState.gemRotateRight });
+      //   } else this.setState({ gemRotate: this.hintState.gemRotateLeft });
+      // }, 500);
+    }
+
+    if (this.hintState.hintOn && !this.props.hint) {
+      clearInterval(this.hintState.hintTimerId);
+      this.setState({ gemScale: this.state.gemMaxScale });
     }
 
     let selectedClass = this.props.selected ? classes.Border : null;
@@ -123,7 +157,16 @@ class Gem extends Component {
           width: this.props.size,
           left: this.props.pos.left,
           top: this.props.pos.top,
-          transform: this.props.dead ? "scale(0)" : "scale(1)",
+          transform: this.props.dead
+            ? "scale(0)"
+            : this.props.hint
+            ? "scale(" + this.state.gemScale + ")"
+            : "scale(1)",
+          //   +
+          //   " rotate(" +
+          //   this.state.gemRotate +
+          //   "deg)"
+          // : "scale(1)",
           transition: "all 0.3s ease-out"
         }}
         onClick={() => this.props.clickHandler(this.props.index)}

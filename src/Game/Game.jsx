@@ -18,7 +18,7 @@ class Game extends Component {
     margin: 0,
     marginLeft: 0,
     activeTile: false, //contains 2d index of which tile is active
-    clickHandlerActive: false,
+    clickHandlerActive: false, //true means animation is in progress
     newGemId: 64, //gemId used for the next newly created gem during the game, increments for every new gem
     matchedOnLevel: [], //2d coordinate of matched gems
     displayGems: false,
@@ -29,7 +29,8 @@ class Game extends Component {
     matchedGems: [], //2d location of gems in a group
     emptyTiles: [],
     potentialMoves: [],
-    level: null
+    level: null,
+    hintActive: false
   };
 
   constructor() {
@@ -61,7 +62,8 @@ class Game extends Component {
           gemType: Math.floor(Math.random() * 7),
           selected: false,
           index: [i, j],
-          dead: false
+          dead: false,
+          hint: false
         });
         row.push({
           gemId: k
@@ -151,6 +153,7 @@ class Game extends Component {
           clickHandler={index => this.clickHandler(index)}
           gem={gem.gemType}
           dead={gem.dead}
+          hint={gem.hint}
         />
       );
     });
@@ -252,7 +255,7 @@ class Game extends Component {
 
     gemsCopy[a_index].index = b;
     gemsCopy[b_index].index = a;
-    this.setState({ level: levelCopy, gems: gemsCopy });
+    this.setState({ gems: gemsCopy });
   };
 
   swapBackAndForth = (a, b) => {
@@ -372,6 +375,14 @@ class Game extends Component {
     this.searchState.potentialMoves = [];
   };
 
+  swapOnLevelArray = (loc1, loc2) => {
+    let temp = this.searchState.level[loc1[0]][loc1[1]];
+    this.searchState.level[loc1[0]][loc1[1]] = this.searchState.level[loc2[0]][
+      loc2[1]
+    ];
+    this.searchState.level[loc2[0]][loc2[1]] = temp;
+  };
+
   findMoves = () => {
     for (let i = 0; i < this.state.height; i++) {
       for (let j = 0; j < this.state.width; j++) {
@@ -394,11 +405,15 @@ class Game extends Component {
     let gemType = this.getGemType(loc);
     let adjacentTile = this.getAdjacentTile(loc, dir);
     if (adjacentTile) {
+      this.swapOnLevelArray(loc, adjacentTile);
       if (this.getMatchedGroup(adjacentTile, gemType, true)) {
         console.log("moveFound: move " + loc + " to " + adjacentTile);
+        this.swapOnLevelArray(loc, adjacentTile);
         return true;
       }
-    } else return false;
+      this.swapOnLevelArray(loc, adjacentTile);
+    }
+    return false;
   };
 
   //searches for a group of matching gems adjacent to loc
@@ -479,7 +494,7 @@ class Game extends Component {
       gemsCopy.splice(gemIndex, 1);
     });
 
-    this.setState({ gems: gemsCopy, level: levelCopy });
+    this.setState({ gems: gemsCopy });
   };
 
   createUniqueGemList = matchedGems => {
@@ -590,7 +605,7 @@ class Game extends Component {
       }
       console.log("newCol");
       console.log(newCol);
-      this.setState({ level: levelCopy, gems: gemsCopy });
+      this.setState({ gems: gemsCopy });
     });
   };
 
@@ -662,7 +677,7 @@ class Game extends Component {
         });
       }
     });
-    this.setState({ gems: gemsCopy, level: levelCopy });
+    this.setState({ gems: gemsCopy });
   };
 
   handleMatched = () => {
@@ -758,6 +773,8 @@ class Game extends Component {
         displayGems: true,
         animate: true
       });
+      this.clearHint();
+      // this.findMoves();
     }
   };
 
@@ -829,7 +846,45 @@ class Game extends Component {
   hintHandler = () => {
     console.log("hintHandler");
     this.findMoves();
+    this.setHint();
     this.clearPotentialMoves();
+  };
+
+  setHint = () => {
+    console.log("setHint");
+    if (!this.searchState.hintActive && !this.state.clickHandlerActive) {
+      this.searchState.hintActive = true;
+      let gemsCopy = this.copyArray(this.state.gems);
+      // this.searchState.potentialMoves.forEach(gem => {
+      //   let index = this.getGemIndex(
+      //     this.searchState.level[gem[0]][gem[1]].gemId
+      //   );
+      //   gemsCopy[index].hint = true;
+      // });
+      console.log("potential moves");
+      console.log(this.searchState.potentialMoves);
+      let rand = Math.floor(
+        Math.random() * this.searchState.potentialMoves.length
+      );
+      let gemId = this.searchState.level[
+        this.searchState.potentialMoves[rand][0]
+      ][this.searchState.potentialMoves[rand][1]].gemId;
+      console.log("gemId");
+      console.log(gemId);
+      let index = this.getGemIndex(gemId);
+      gemsCopy[index].hint = true;
+      this.setState({ gems: gemsCopy });
+    }
+  };
+
+  clearHint = () => {
+    console.log("clearHint");
+    this.searchState.hintActive = false;
+    let gemsCopy = this.copyArray(this.state.gems);
+    gemsCopy.forEach(gem => {
+      gem.hint = false;
+    });
+    this.setState({ gems: gemsCopy });
   };
 
   render() {
