@@ -27,7 +27,8 @@ class Game extends Component {
 
   searchState = {
     matchedGems: [], //2d location of gems in a group
-    emptyTiles: []
+    emptyTiles: [],
+    level: null
   };
 
   constructor() {
