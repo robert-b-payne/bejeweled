@@ -9,13 +9,12 @@ import Background_Image from "../assets/space_darkened.png";
 
 class Game extends Component {
   state = {
-    level: null,
     gems: [],
     newGems: [],
     checkerboard: null,
     height: 8,
     width: 8,
-    tileSize: 80,
+    tileSize: 65,
     margin: 0,
     marginLeft: 0,
     activeTile: false, //contains 2d index of which tile is active
@@ -29,7 +28,8 @@ class Game extends Component {
   searchState = {
     matchedGems: [], //2d location of gems in a group
     emptyTiles: [],
-    potentialMoves: []
+    potentialMoves: [],
+    level: null
   };
 
   constructor() {
@@ -76,7 +76,7 @@ class Game extends Component {
       matchedOnLevel.push(matchedRow);
     }
     if (constructor) {
-      this.state.level = level;
+      this.searchState.level = level;
       this.state.gems = gems;
       this.state.checkerboard = checkerboard;
       this.state.marginLeft = marginLeft;
@@ -86,9 +86,9 @@ class Game extends Component {
       }, 0);
       // this.searchAll();
     } else {
+      this.searchState.level = level;
       this.setState(
         {
-          level: level,
           gems: gems,
           checkerboard: checkerboard,
           marginLeft: marginLeft,
@@ -125,7 +125,7 @@ class Game extends Component {
   findGemOnLevel = gemId => {
     for (let i = 0; i < this.state.height; i++) {
       for (let j = 0; j < this.state.width; j++) {
-        if (this.state.level[i][j].gemId === gemId) {
+        if (this.searchState.level[i][j].gemId === gemId) {
           return [i, j];
         }
       }
@@ -238,12 +238,12 @@ class Game extends Component {
   swapPositions = (a, b) => {
     // console.log("swapping positions [" + a + "], [" + b + "]");
     // console.log("level's current value: ");
-    // console.log(this.state.level);
+    // console.log(this.searchState.level);
     let temp;
-    let a_index = this.getGemIndex(this.state.level[a[0]][a[1]].gemId);
-    let b_index = this.getGemIndex(this.state.level[b[0]][b[1]].gemId);
+    let a_index = this.getGemIndex(this.searchState.level[a[0]][a[1]].gemId);
+    let b_index = this.getGemIndex(this.searchState.level[b[0]][b[1]].gemId);
     let gemsCopy = this.copyArray(this.state.gems);
-    let levelCopy = this.copyArray(this.state.level);
+    let levelCopy = this.searchState.level;
     temp = levelCopy[a[0]][a[1]].gemId;
     levelCopy[a[0]][a[1]].gemId = levelCopy[b[0]][b[1]].gemId;
     levelCopy[b[0]][b[1]].gemId = temp;
@@ -280,8 +280,8 @@ class Game extends Component {
   setGemActive = (index, isSelected) => {
     console.log("-==========setGemActive==========-");
     // console.log(index);
-    // console.log(this.state.level);
-    let gemId = this.state.level[index[0]][index[1]].gemId;
+    // console.log(this.searchState.level);
+    let gemId = this.searchState.level[index[0]][index[1]].gemId;
     let gemIndex = this.getGemIndex(gemId);
     let gemsCopy = this.copyArray(this.state.gems);
     // console.log("gemId");
@@ -301,7 +301,9 @@ class Game extends Component {
     // console.log(index);
     // console.log(this.state.gems);
 
-    let gemIndex = this.getGemIndex(this.state.level[index[0]][index[1]].gemId);
+    let gemIndex = this.getGemIndex(
+      this.searchState.level[index[0]][index[1]].gemId
+    );
     // console.log("gemIndex");
     // console.log(gemIndex);
     return this.state.gems[gemIndex].gemType;
@@ -442,7 +444,7 @@ class Game extends Component {
       //   console.log(group);
       group.forEach(gem => {
         // console.log(gem);
-        let gemId = this.state.level[gem[0]][gem[1]].gemId;
+        let gemId = this.searchState.level[gem[0]][gem[1]].gemId;
         let gemIndex = this.getGemIndex(gemId);
         gemsCopy = this.copyArray(this.state.gems);
         gemsCopy[gemIndex].dead = true;
@@ -456,7 +458,7 @@ class Game extends Component {
     console.log("-==========deleteGems==========-");
     console.log("matched gems: ");
     console.log(this.searchState.matchedGems);
-    let levelCopy = this.copyArray(this.state.level);
+    let levelCopy = this.searchState.level;
     let gemIndex;
     let gemId;
     let gemsCopy = this.copyArray(this.state.gems);
@@ -554,7 +556,7 @@ class Game extends Component {
     let col = this.findColWithEmpty();
     console.log(col);
     let newCol = [];
-    let levelCopy = this.copyArray(this.state.level);
+    let levelCopy = this.searchState.level;
     let gemsCopy = this.copyArray(this.state.gems);
     let gemIndex;
 
@@ -624,7 +626,7 @@ class Game extends Component {
     let firstEmpty;
     let gemIndex;
     let gemsCopy = this.copyArray(this.state.gems);
-    let levelCopy = this.copyArray(this.state.level);
+    let levelCopy = this.searchState.level;
 
     this.state.newGems.forEach((col, i) => {
       if (col.length > 0) {
