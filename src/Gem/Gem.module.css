@@ -1,8 +1,25 @@
+.OuterContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease-out;
+}
+
+.Border {
+  /* border: dotted rgb(66, 244, 89, 1) 2px; */
+  transition: all 0.2s ease-out;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  /* background-color: rgba(255, 0, 0, 0.2); */
+  /* position: relative; */
+}
+
 .Gem {
-  /* width: 70px;
-  height: 70px; */
-  /* background-color: red; */
-  /* position: absolute; */
+  margin: auto;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   display: flex;
@@ -10,21 +27,7 @@
   justify-content: center;
   align-items: center;
   margin: 0;
+  transition: all 0.3s ease-out;
   /* border: solid red 1px; */
-  /* transition: all 0.3s ease-out; */
-}
-
-.Border {
-  /* border: dotted rgb(66, 244, 89, 1) 2px; */
-  transition: all 0.2s ease-out;
-  display: inline-block;
-}
-
-.OuterContainer {
-  position: absolute;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 2px;
+  /* background-color: rgba(0, 255, 0, 0.2); */
 }

@@ -1,9 +1,9 @@
 .HintButton {
-  border: 1px solid rgba(255, 0, 0, 0.4);
+  /* border: 1px solid rgba(255, 0, 0, 0.4); */
   background-color: rgba(0, 0, 0, 0.4);
   padding: 10px;
   position: absolute;
-  left: 16%;
+  left: 15.5%;
   bottom: 25%;
   border-radius: 80px;
   color: white;
@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.05s ease-out;
+  /* transition: all 0.05s ease-out; */
 }
 .HintButton:hover {
   cursor: pointer;

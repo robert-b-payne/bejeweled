@@ -773,8 +773,8 @@ class Game extends Component {
         displayGems: true,
         animate: true
       });
-      this.clearHint();
       // this.findMoves();
+      this.clearHint();
     }
   };
 
@@ -821,12 +821,6 @@ class Game extends Component {
           this.searchAll();
         }, 325); //325
       }
-      // setTimeout(() => {
-      //   this.handleMatched();
-      //   setTimeout(() => {
-      //     this.searchAll();
-      //   }, 800);
-      // }, 325); //650
     }
   };
 
@@ -852,6 +846,10 @@ class Game extends Component {
 
   setHint = () => {
     console.log("setHint");
+    console.log("hintActive");
+    console.log(this.searchState.hintActive);
+    console.log("clickHandlerActive");
+    console.log(this.state.clickHandlerActive);
     if (!this.searchState.hintActive && !this.state.clickHandlerActive) {
       this.searchState.hintActive = true;
       let gemsCopy = this.copyArray(this.state.gems);
@@ -866,6 +864,7 @@ class Game extends Component {
       let rand = Math.floor(
         Math.random() * this.searchState.potentialMoves.length
       );
+      console.log("hint = " + rand);
       let gemId = this.searchState.level[
         this.searchState.potentialMoves[rand][0]
       ][this.searchState.potentialMoves[rand][1]].gemId;
@@ -879,12 +878,14 @@ class Game extends Component {
 
   clearHint = () => {
     console.log("clearHint");
-    this.searchState.hintActive = false;
-    let gemsCopy = this.copyArray(this.state.gems);
-    gemsCopy.forEach(gem => {
-      gem.hint = false;
-    });
-    this.setState({ gems: gemsCopy });
+    if (this.searchState.hintActive) {
+      this.searchState.hintActive = false;
+      let gemsCopy = this.copyArray(this.state.gems);
+      gemsCopy.forEach(gem => {
+        gem.hint = false;
+      });
+      this.setState({ gems: gemsCopy });
+    }
   };
 
   render() {

@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.05s ease-out;
+  /* transition: all 0.025s ease-out; */
 }
 .Button:hover {
   cursor: pointer;

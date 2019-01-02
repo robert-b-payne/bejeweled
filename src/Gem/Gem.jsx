@@ -39,7 +39,7 @@ class Gem extends Component {
     widthLower: 0.65,
     widthUpper: 0.75,
     gemScale: 1, //scaling for hint
-    gemMaxScale: 1.2,
+    gemMaxScale: 1.25,
     gemRotate: 0
   };
 
@@ -58,7 +58,7 @@ class Gem extends Component {
   render() {
     if (!this.state.cursorOn && this.props.selected) {
       // console.log("turning on timer!");
-      //turn on timer
+      //turn on timer for selection cursor
       this.setState({
         cursorOn: true,
         width: this.state.widthUpper
@@ -93,7 +93,15 @@ class Gem extends Component {
     //animate hint
     if (this.props.hint && !this.hintState.hintOn) {
       this.hintState.hintOn = true;
-      this.hintState.timerId = setInterval(() => {
+      if (this.state.gemScale === this.state.gemMaxScale) {
+        this.setState({ gemScale: 1 });
+      } else this.setState({ gemScale: this.state.gemMaxScale });
+      setTimeout(() => {
+        if (this.state.gemScale === this.state.gemMaxScale) {
+          this.setState({ gemScale: 1 });
+        } else this.setState({ gemScale: this.state.gemMaxScale });
+      }, 280);
+      this.hintState.hintTimerId = setInterval(() => {
         if (this.state.gemScale === this.state.gemMaxScale) {
           this.setState({ gemScale: 1 });
         } else this.setState({ gemScale: this.state.gemMaxScale });
@@ -101,8 +109,8 @@ class Gem extends Component {
           if (this.state.gemScale === this.state.gemMaxScale) {
             this.setState({ gemScale: 1 });
           } else this.setState({ gemScale: this.state.gemMaxScale });
-        }, 280);
-      }, 850);
+        }, 400);
+      }, 1000);
       //   if (this.state.gemRotate !== this.hintState.gemRotateRight) {
       //     this.setState({ gemRotate: this.hintState.gemRotateRight });
       //   } else this.setState({ gemRotate: this.hintState.gemRotateLeft });
@@ -114,7 +122,12 @@ class Gem extends Component {
       this.setState({ gemScale: this.state.gemMaxScale });
     }
 
-    let selectedClass = this.props.selected ? classes.Border : null;
+    if (this.props.dead) {
+      if (this.state.cursorTimerId) clearInterval(this.state.cursorTimerId);
+      if (this.hintState.hintTimerId) clearInterval(this.hintState.hintTimerId);
+    }
+
+    // let selectedClass = this.props.selected ? classes.Border : null;
 
     let gem;
     switch (this.props.gem) {
@@ -146,23 +159,27 @@ class Gem extends Component {
     // console.log("index is " + props.index);
 
     return (
-      <span
+      <span //outer container
         className={classes.OuterContainer}
         style={{
           left: this.props.pos.left,
-          top: this.props.pos.top
+          top: this.props.pos.top,
+          width: this.props.size,
+          height: this.props.size
         }}
       >
         <span //border
-          className={selectedClass}
+          className={classes.Border}
           style={{
             height: this.props.size * this.state.width,
             width: this.props.size * this.state.width,
-            border: this.state.cursorOn ? this.state.border : "0px solid black"
+            border: this.state.cursorOn
+              ? this.state.border
+              : "1px solid rgba(0,0,0,0)"
             // borderRadius: "50px"
           }}
         >
-          <span
+          <span //gem
             className={classes.Gem}
             style={{
               backgroundImage: "url('" + gem + "')",
