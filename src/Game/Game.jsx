@@ -22,7 +22,8 @@ class Game extends Component {
     newGemId: 64, //gemId used for the next newly created gem during the game, increments for every new gem
     matchedOnLevel: [], //2d coordinate of matched gems
     displayGems: false,
-    animate: false
+    animate: false,
+    noMoves: false
   };
 
   searchState = {
@@ -282,17 +283,9 @@ class Game extends Component {
   //sets gem selected at index in level array to isSelected (boolean)
   setGemActive = (index, isSelected) => {
     console.log("-==========setGemActive==========-");
-    // console.log(index);
-    // console.log(this.searchState.level);
     let gemId = this.searchState.level[index[0]][index[1]].gemId;
     let gemIndex = this.getGemIndex(gemId);
     let gemsCopy = this.copyArray(this.state.gems);
-    // console.log("gemId");
-    // console.log(gemId);
-    // console.log("gemsCopy");
-    // console.log(gemsCopy);
-    // console.log("gemIndex");
-    // console.log(gemIndex);
     gemsCopy[gemIndex].selected = isSelected;
     let activeTile = isSelected ? index : false;
     this.setState({ gems: gemsCopy, activeTile: activeTile });
@@ -300,15 +293,9 @@ class Game extends Component {
 
   //returns gem type (number 0 to 6) at index location in level array
   getGemType = index => {
-    // console.log("inside getGemType");
-    // console.log(index);
-    // console.log(this.state.gems);
-
     let gemIndex = this.getGemIndex(
       this.searchState.level[index[0]][index[1]].gemId
     );
-    // console.log("gemIndex");
-    // console.log(gemIndex);
     return this.state.gems[gemIndex].gemType;
   };
 
@@ -360,16 +347,6 @@ class Game extends Component {
     }
     this.setState({ matchedOnLevel: newMatchedOnLevel });
   };
-
-  // initPotentialMoves = () => {
-  //   let potentialMoves = [];
-  //   let potentialMovesRow = []
-  //   for(let i=0; i<this.state.height; i++){
-  //     for(let j=0; j<this.state.width; j++){
-  //       potentialMoves
-  //     }
-  //   }
-  // }
 
   clearPotentialMoves = () => {
     this.searchState.potentialMoves = [];
@@ -774,7 +751,12 @@ class Game extends Component {
         animate: true
       });
       // this.findMoves();
+      this.findMoves();
+      if (this.searchState.potentialMoves.length === 0) {
+        this.setState({ noMoves: true });
+      }
       this.clearHint();
+      this.clearPotentialMoves();
     }
   };
 
@@ -895,34 +877,47 @@ class Game extends Component {
     // let tileArray =
     // console.log(tileArray);
 
+    let noMoves = null;
+
+    if (this.state.noMoves) {
+      noMoves = <p style={{ color: "red" }}>No moves left!</p>;
+      setTimeout(() => {
+        this.reset();
+        this.setState({ noMoves: false });
+      }, 3000);
+    }
+
     return (
-      <div
-        style={{
-          backgroundImage: "url('" + Background_Image + "')",
-          backgroundSize: "cover",
-          backgroundPosition: "33%",
-          backgroundRepeat: "no-repeat",
-          width:
-            // this.state.marginLeft +
-            // 2 * this.state.margin +
-            // this.state.width * this.state.tileSize,
-            this.state.tileSize * this.state.width * 1.65,
-          height:
-            this.state.margin * 2 + this.state.height * this.state.tileSize
-        }}
-        className={classes.gameContainer}
-      >
-        <HintButton clickHandler={this.hintHandler} />
-        <Reset resetHandler={this.resetHandler} />
+      <div>
+        {noMoves}
         <div
-          className={classes.tilesContainer}
           style={{
-            width: this.state.width * this.state.tileSize + "px",
-            height: this.state.height * this.state.tileSize + "px"
+            backgroundImage: "url('" + Background_Image + "')",
+            backgroundSize: "cover",
+            backgroundPosition: "33%",
+            backgroundRepeat: "no-repeat",
+            width:
+              // this.state.marginLeft +
+              // 2 * this.state.margin +
+              // this.state.width * this.state.tileSize,
+              this.state.tileSize * this.state.width * 1.65,
+            height:
+              this.state.margin * 2 + this.state.height * this.state.tileSize
           }}
+          className={classes.gameContainer}
         >
-          {checkerboard}
-          {this.state.displayGems ? gemArray : null}
+          <HintButton clickHandler={this.hintHandler} />
+          <Reset resetHandler={this.resetHandler} />
+          <div
+            className={classes.tilesContainer}
+            style={{
+              width: this.state.width * this.state.tileSize + "px",
+              height: this.state.height * this.state.tileSize + "px"
+            }}
+          >
+            {checkerboard}
+            {this.state.displayGems ? gemArray : null}
+          </div>
         </div>
       </div>
     );
