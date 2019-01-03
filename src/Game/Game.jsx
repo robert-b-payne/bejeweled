@@ -113,7 +113,14 @@ class Game extends Component {
       if (constructor) {
         this.state.animate = true;
         this.handleMatched();
-      } else this.setState({ animate: true }, this.handleMatched());
+      } else {
+        this.setState({ animate: true }, () => {
+          // this.shrinkAllGems();
+          // setTimeout(() => {
+          this.handleMatched();
+          // }, 300); //wait for gems to shrink
+        });
+      }
     }, 2);
     // this.setLevelEmpty();
     console.log("constructor");
@@ -123,13 +130,16 @@ class Game extends Component {
 
   resetHandler = () => {
     console.log("resetHandler");
-    this.setState({ animate: false, displayGems: false }, this.reset(false));
+    this.shrinkAllGems();
+    setTimeout(() => {
+      this.setState({ animate: false, displayGems: false }, this.reset(false));
+    }, 300); //wait for gems to shrink
   };
 
   // componentDidMount() {
   //   setTimeout(() => {
-  //     this.searchAll();
-  //   }, 1);
+  //     this.shrinkAllGems();
+  //   }, 3000);
   // }
 
   copyArray = a => {
@@ -194,6 +204,14 @@ class Game extends Component {
     });
     this.setState({ gems: gemsCopy, newGems: this.sortNewGems(gemsCopy) });
     console.log(gemsCopy);
+  };
+
+  shrinkAllGems = () => {
+    let gemsCopy = this.copyArray(this.state.gems);
+    gemsCopy.forEach(gem => {
+      gem.dead = true;
+    });
+    this.setState({ gems: gemsCopy });
   };
 
   drawCheckerboard = () => {
