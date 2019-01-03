@@ -23,7 +23,9 @@ class Game extends Component {
     matchedOnLevel: [], //2d coordinate of matched gems
     displayGems: false,
     animate: false,
-    noMoves: false
+    noMoves: false,
+    initializing: true,
+    initialSearchComplete: false
   };
 
   searchState = {
@@ -41,6 +43,7 @@ class Game extends Component {
 
   reset = constructor => {
     console.log("reset method");
+    this.state.initializing = true;
     let marginLeft =
       this.state.tileSize * this.state.height * 0.875 - 0.5 * this.state.margin;
     //initialize level array
@@ -104,6 +107,18 @@ class Game extends Component {
         }
       );
     }
+    setTimeout(() => {
+      this.setLevelEmpty();
+      this.convertGemsToNewGems();
+      if (constructor) {
+        this.state.animate = true;
+        this.handleMatched();
+      } else this.setState({ animate: true }, this.handleMatched());
+    }, 2);
+    // this.setLevelEmpty();
+    console.log("constructor");
+    console.log("this.searchState.level");
+    console.log(this.searchState.level);
   };
 
   resetHandler = () => {
@@ -160,6 +175,25 @@ class Game extends Component {
     });
 
     return gemArray;
+  };
+
+  setLevelEmpty = () => {
+    for (let i = 0; i < this.state.height; i++) {
+      for (let j = 0; j < this.state.width; j++) {
+        this.searchState.level[i][j].gemId = "empty";
+      }
+    }
+  };
+
+  convertGemsToNewGems = () => {
+    console.log("convertGemsToNewGems");
+    console.log(this.state.gems);
+    let gemsCopy = this.copyArray(this.state.gems);
+    gemsCopy.forEach(gem => {
+      gem.index = [gem.index[0] - 9, gem.index[1]];
+    });
+    this.setState({ gems: gemsCopy, newGems: this.sortNewGems(gemsCopy) });
+    console.log(gemsCopy);
   };
 
   drawCheckerboard = () => {
@@ -596,6 +630,10 @@ class Game extends Component {
     return [...new Set(cols)];
   };
 
+  compareGemPositions = (a, b) => {
+    return a.index[0] > b.index[0] ? 1 : a.index[0] === b.index[0] ? 0 : -1;
+  };
+
   sortNewGems = gems => {
     console.log("-==========sortNewGems==========-");
     let sortedGems = [];
@@ -608,6 +646,10 @@ class Game extends Component {
       col = gem.index[1];
       sortedGems[col].push(gem);
     });
+
+    sortedGems.forEach(col => {
+      col.sort(this.compareGemPositions);
+    });
     console.log("sorted gems");
     console.log(sortedGems);
     return sortedGems;
@@ -619,6 +661,8 @@ class Game extends Component {
     let gemIndex;
     let gemsCopy = this.copyArray(this.state.gems);
     let levelCopy = this.searchState.level;
+
+    console.log(this.state.newGems);
 
     this.state.newGems.forEach((col, i) => {
       if (col.length > 0) {
@@ -657,36 +701,44 @@ class Game extends Component {
     this.setState({ gems: gemsCopy });
   };
 
-  handleMatched = () => {
+  handleMatched = reset => {
     this.shrinkMatched();
     console.log("after shrinkMatched");
     console.log(this.searchState.matchedGems);
     if (!this.state.animate) {
-      this.deleteGems();
-      this.createNewGems();
+      if (!reset) {
+        this.deleteGems();
+        this.createNewGems();
+      }
       this.shiftDownCol();
       this.positionNewGems();
       this.clearMatchedGems();
       this.clearMatchedOnLevel();
       // this.setState({ clickHandlerActive: false });
     } else {
-      setTimeout(() => {
-        //   debugger;
-        console.log("inside timeout");
-        console.log(this.searchState.matchedGems);
-        this.deleteGems();
-        this.createNewGems();
-        this.shiftDownCol();
-        //shiftDownCol
-        //createNewGems
-        //   this.positionNewGems();
-        setTimeout(() => {
-          this.positionNewGems();
-          this.clearMatchedGems();
-          this.clearMatchedOnLevel();
-          this.setState({ clickHandlerActive: false });
-        }, 1); //time for old gems to reposition (1)
-      }, 300); //time for gems to move and shrink (300)
+      setTimeout(
+        () => {
+          //   debugger;
+          console.log("inside timeout");
+          console.log(this.searchState.matchedGems);
+          if (!reset) {
+            this.deleteGems();
+            this.createNewGems();
+          }
+          this.shiftDownCol();
+          //shiftDownCol
+          //createNewGems
+          //   this.positionNewGems();
+          setTimeout(() => {
+            this.positionNewGems();
+            this.clearMatchedGems();
+            this.clearMatchedOnLevel();
+            this.setState({ clickHandlerActive: false, initializing: false });
+          }, 1); //time for old gems to reposition (1)
+        },
+        this.state.initializing ? 1 : 300
+        // reset ? 300 : 1
+      ); //time for gems to move and shrink (300)
     }
 
     //change gemId in level array to 'empty'
@@ -736,7 +788,7 @@ class Game extends Component {
       //     " elements!"
       // );
       console.log(this.searchState.matchedGems);
-      this.handleMatched();
+      this.handleMatched(false);
       //   this.clearMatchedOnLevel();
       if (!this.state.animate) this.searchAll();
       else {
@@ -748,7 +800,8 @@ class Game extends Component {
       this.setState({
         clickHandlerActive: false,
         displayGems: true,
-        animate: true
+        animate: true,
+        initialSearchComplete: true
       });
       // this.findMoves();
       this.findMoves();
@@ -872,7 +925,8 @@ class Game extends Component {
 
   render() {
     console.log("rendering . . . ");
-    let gemArray = this.initializeGems();
+    let gemArray = this.state.displayGems ? this.initializeGems() : null;
+    // let gemArray = this.initializeGems();
     let checkerboard = this.drawCheckerboard();
     // let tileArray =
     // console.log(tileArray);
@@ -882,8 +936,7 @@ class Game extends Component {
     if (this.state.noMoves) {
       noMoves = <p style={{ color: "red" }}>No moves left!</p>;
       setTimeout(() => {
-        this.reset();
-        this.setState({ noMoves: false });
+        this.setState({ noMoves: false }, this.reset());
       }, 3000);
     }
 
@@ -916,7 +969,7 @@ class Game extends Component {
             }}
           >
             {checkerboard}
-            {this.state.displayGems ? gemArray : null}
+            {gemArray}
           </div>
         </div>
       </div>
