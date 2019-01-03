@@ -56,6 +56,7 @@ class Gem extends Component {
   }
 
   render() {
+    // console.log("rendering gem...");
     if (!this.state.cursorOn && this.props.selected) {
       // console.log("turning on timer!");
       //turn on timer for selection cursor
@@ -118,7 +119,9 @@ class Gem extends Component {
     }
 
     if (this.hintState.hintOn && !this.props.hint) {
+      // console.log("turning off gem hint . . . ");
       clearInterval(this.hintState.hintTimerId);
+      this.hintState.hintOn = false;
       this.setState({ gemScale: this.state.gemMaxScale });
     }
 

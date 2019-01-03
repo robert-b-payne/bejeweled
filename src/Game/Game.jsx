@@ -36,6 +36,10 @@ class Game extends Component {
     hintActive: false
   };
 
+  hintState = {
+    hintLocation: false
+  };
+
   constructor() {
     super();
     this.reset(true);
@@ -138,8 +142,8 @@ class Game extends Component {
 
   // componentDidMount() {
   //   setTimeout(() => {
-  //     this.shrinkAllGems();
-  //   }, 3000);
+  //     this.clearHint();
+  //   }, 4000);
   // }
 
   copyArray = a => {
@@ -413,6 +417,7 @@ class Game extends Component {
   };
 
   findMoves = () => {
+    console.log("findMoves");
     for (let i = 0; i < this.state.height; i++) {
       for (let j = 0; j < this.state.width; j++) {
         let loc = [i, j];
@@ -683,6 +688,8 @@ class Game extends Component {
     console.log(this.state.newGems);
 
     this.state.newGems.forEach((col, i) => {
+      console.log("-===============col===============-");
+      console.log(col);
       if (col.length > 0) {
         for (let k = this.state.height - 1; k >= 0; k--) {
           if (levelCopy[k][i].gemId === "empty") {
@@ -706,6 +713,8 @@ class Game extends Component {
           console.log(firstEmpty);
           console.log("levelCopy[firstEmpty]");
           console.log(levelCopy[firstEmpty]);
+          console.log("this.state.gems");
+          console.log(this.state.gems);
 
           //   if (firstEmpty >= 0) {
           gemIndex = this.getGemIndex(gem.gemId);
@@ -906,12 +915,6 @@ class Game extends Component {
     if (!this.searchState.hintActive && !this.state.clickHandlerActive) {
       this.searchState.hintActive = true;
       let gemsCopy = this.copyArray(this.state.gems);
-      // this.searchState.potentialMoves.forEach(gem => {
-      //   let index = this.getGemIndex(
-      //     this.searchState.level[gem[0]][gem[1]].gemId
-      //   );
-      //   gemsCopy[index].hint = true;
-      // });
       console.log("potential moves");
       console.log(this.searchState.potentialMoves);
       let rand = Math.floor(
@@ -921,6 +924,7 @@ class Game extends Component {
       let gemId = this.searchState.level[
         this.searchState.potentialMoves[rand][0]
       ][this.searchState.potentialMoves[rand][1]].gemId;
+      this.hintState.hintLocation = this.searchState.potentialMoves[rand];
       console.log("gemId");
       console.log(gemId);
       let index = this.getGemIndex(gemId);
@@ -931,12 +935,15 @@ class Game extends Component {
 
   clearHint = () => {
     console.log("clearHint");
+    console.log("this.hintState.hintLocation");
+    console.log(this.hintState.hintLocation);
     if (this.searchState.hintActive) {
       this.searchState.hintActive = false;
       let gemsCopy = this.copyArray(this.state.gems);
-      gemsCopy.forEach(gem => {
-        gem.hint = false;
-      });
+      let loc = this.hintState.hintLocation;
+      let gemId = this.searchState.level[loc[0]][loc[1]].gemId;
+      let index = this.getGemIndex(gemId);
+      gemsCopy[index].hint = false;
       this.setState({ gems: gemsCopy });
     }
   };
