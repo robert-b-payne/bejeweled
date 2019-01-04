@@ -1,0 +1,36 @@
+.Button {
+  /* border: 1px solid rgba(255, 0, 0, 0.4); */
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  /* position: absolute;
+  left: 0;
+  right: 0; */
+  margin: auto;
+  border-radius: 80px;
+  color: white;
+  height: 35px;
+  width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* transition: all 0.05s ease-out; */
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+}
+.Button:hover {
+  cursor: pointer;
+}
+
+.Button:active {
+  height: 25px;
+}
+
+.Container {
+  height: 50px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: red; */
+}

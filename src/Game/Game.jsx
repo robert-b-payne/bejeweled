@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import Gem from "../Gem/Gem";
 import Tile from "../Tile/Tile";
 import classes from "./Game.module.css";
-import Reset from "../Reset/Reset";
-import HintButton from "../HintButton/HintButton";
+// import Reset from "../Reset/Reset";
+// import HintButton from "../HintButton/HintButton";
+import Button from "../Button/Button";
+import Button_Container from "../Button_Container/Button_Container";
 
 import Background_Image from "../assets/space_darkened.png";
 
@@ -972,20 +974,28 @@ class Game extends Component {
           style={{
             backgroundImage: "url('" + Background_Image + "')",
             backgroundSize: "cover",
-            backgroundPosition: "33%",
+            backgroundPosition: "85%",
             backgroundRepeat: "no-repeat",
             width:
               // this.state.marginLeft +
               // 2 * this.state.margin +
               // this.state.width * this.state.tileSize,
-              this.state.tileSize * this.state.width * 1.65,
+              this.state.tileSize * this.state.width * 1.5,
             height:
               this.state.margin * 2 + this.state.height * this.state.tileSize
           }}
           className={classes.gameContainer}
         >
-          <HintButton clickHandler={this.hintHandler} />
-          <Reset resetHandler={this.resetHandler} />
+          <Button_Container
+            width={0.5 * this.state.tileSize * this.state.width - 20}
+          >
+            <Button clickHandler={this.hintHandler} top={0}>
+              Hint
+            </Button>
+            <Button clickHandler={this.resetHandler} bottom={0}>
+              Reset
+            </Button>
+          </Button_Container>
           <div
             className={classes.tilesContainer}
             style={{

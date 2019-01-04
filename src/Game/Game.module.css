@@ -2,12 +2,10 @@
   text-align: center;
   margin: auto;
   padding: 20px;
-  /* display: flex;
-  flex-direction: row;
-  justify-content: flex-end; */
   position: relative;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: flex-end;
   border-radius: 25px;
   box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.7);
