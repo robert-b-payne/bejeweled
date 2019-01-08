@@ -1,0 +1,28 @@
+.container {
+  /* border: 1px solid black; */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  /* border: 1px solid rgba(0, 0, 0, 0.5); */
+  display: inline-block;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 6px 8px 4px 8px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  /* position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0; */
+  /* margin: auto; */
+  /* width: 110px; */
+  border-radius: 45px;
+}
+
+/* .digit_container {
+  
+  } */
+
+.digit {
+  width: 24px;
+}

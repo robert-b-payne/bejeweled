@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import Gem from "../Gem/Gem";
 import Tile from "../Tile/Tile";
 import classes from "./Game.module.css";
-// import Reset from "../Reset/Reset";
-// import HintButton from "../HintButton/HintButton";
 import Button from "../Button/Button";
 import Button_Container from "../Button_Container/Button_Container";
 
 import Background_Image from "../assets/space_darkened.png";
+// import DigitalDisplay from "../DigitalDisplay/DigitalDisplay";
+import Score from "../Score/Score";
+import UIContainer from "../UIContainer/UIContainer";
 
 class Game extends Component {
   state = {
@@ -986,16 +987,21 @@ class Game extends Component {
           }}
           className={classes.gameContainer}
         >
-          <Button_Container
+          <UIContainer
             width={0.5 * this.state.tileSize * this.state.width - 20}
           >
-            <Button clickHandler={this.hintHandler} top={0}>
-              Hint
-            </Button>
-            <Button clickHandler={this.resetHandler} bottom={0}>
-              Reset
-            </Button>
-          </Button_Container>
+            <Score val={0} />
+            <Button_Container
+              width={0.5 * this.state.tileSize * this.state.width - 20}
+            >
+              <Button clickHandler={this.hintHandler} top={0}>
+                Hint
+              </Button>
+              <Button clickHandler={this.resetHandler} bottom={0}>
+                Reset
+              </Button>
+            </Button_Container>
+          </UIContainer>
           <div
             className={classes.tilesContainer}
             style={{
