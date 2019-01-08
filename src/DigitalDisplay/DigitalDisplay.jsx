@@ -1,5 +1,4 @@
 import React from "react";
-// import empty_digit from "../assets/numbers/empty_digit.svg";
 import zero_digit from "../assets/numbers/zero_digit.svg";
 import one_digit from "../assets/numbers/one_digit.svg";
 import two_digit from "../assets/numbers/two_digit.svg";
@@ -99,18 +98,6 @@ const DigitalDisplay = props => {
       </span>
     );
   }
-  // else {
-  //   correctNumArray.splice(
-  //     0,
-  //     0,
-  //     <span key={"empty"}>
-  //       <img src={empty_digit} className={classes.digit} />
-  //     </span>
-  //   );
-  // }
-  // }
-
-  // console.log(correctNumArray);
 
   return <span className={classes.container}>{correctNumArray}</span>;
 };

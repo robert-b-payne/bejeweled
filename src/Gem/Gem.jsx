@@ -126,6 +126,7 @@ class Gem extends Component {
     }
 
     if (this.props.dead) {
+      console.log("rendering . . . ");
       if (this.state.cursorTimerId) clearInterval(this.state.cursorTimerId);
       if (this.hintState.hintTimerId) clearInterval(this.hintState.hintTimerId);
     }

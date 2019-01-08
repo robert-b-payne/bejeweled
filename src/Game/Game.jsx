@@ -9,6 +9,8 @@ import Background_Image from "../assets/space_darkened.png";
 // import DigitalDisplay from "../DigitalDisplay/DigitalDisplay";
 import Score from "../Score/Score";
 import UIContainer from "../UIContainer/UIContainer";
+import Spinner from "../Spinner/Spinner";
+import Preloader from "../Preloader/Preloader";
 
 class Game extends Component {
   state = {
@@ -28,7 +30,10 @@ class Game extends Component {
     animate: false,
     noMoves: false,
     initializing: true,
-    initialSearchComplete: false
+    initialSearchComplete: false,
+    numGemTypes: 7,
+    score: 0,
+    loaded: false
   };
 
   searchState = {
@@ -36,7 +41,8 @@ class Game extends Component {
     emptyTiles: [],
     potentialMoves: [],
     level: null,
-    hintActive: false
+    hintActive: false,
+    consecutiveMatches: 0
   };
 
   hintState = {
@@ -70,7 +76,7 @@ class Game extends Component {
         matchedRow.push(false);
         gems.push({
           gemId: k,
-          gemType: Math.floor(Math.random() * 7),
+          gemType: Math.floor(Math.random() * this.state.numGemTypes),
           selected: false,
           index: [i, j],
           dead: false,
@@ -119,9 +125,10 @@ class Game extends Component {
       this.convertGemsToNewGems();
       if (constructor) {
         this.state.animate = true;
+        this.state.score = 0;
         this.handleMatched();
       } else {
-        this.setState({ animate: true }, () => {
+        this.setState({ animate: true, score: 0 }, () => {
           // this.shrinkAllGems();
           // setTimeout(() => {
           this.handleMatched();
@@ -145,7 +152,7 @@ class Game extends Component {
 
   // componentDidMount() {
   //   setTimeout(() => {
-  //     this.clearHint();
+  //     alert("hello, world!");
   //   }, 4000);
   // }
 
@@ -578,7 +585,7 @@ class Game extends Component {
       colCount[gem[1]]++;
       newGems.push({
         gemId: newGemId,
-        gemType: Math.floor(Math.random() * 7),
+        gemType: Math.floor(Math.random() * this.state.numGemTypes),
         selected: false,
         // index: [-1, gem[1]],
         index: [-1 - colCount[gem[1]], gem[1]],
@@ -732,6 +739,7 @@ class Game extends Component {
   };
 
   handleMatched = reset => {
+    this.countMatchedType();
     this.shrinkMatched();
     console.log("after shrinkMatched");
     console.log(this.searchState.matchedGems);
@@ -796,6 +804,7 @@ class Game extends Component {
 
   searchAll = () => {
     if (this.state.animate) this.setState({ clickHandlerActive: true });
+    this.searchState.consecutiveMatches++;
     console.log("-====================searchAll====================-");
     let found = false;
     for (let i = 0; i < this.state.height; i++) {
@@ -827,6 +836,7 @@ class Game extends Component {
         }, 800);
       }
     } else {
+      this.searchState.consecutiveMatches = 0;
       this.setState({
         clickHandlerActive: false,
         displayGems: true,
@@ -951,8 +961,47 @@ class Game extends Component {
     }
   };
 
+  //counts the number of each type of matched gem
+  countMatchedType = () => {
+    console.log("-====================countMatchedType====================-");
+    let uniqueList = this.createUniqueGemList(this.searchState.matchedGems);
+    let matchedArray = [];
+    let score = this.state.score;
+    for (let i = 0; i < this.state.numGemTypes; i++) {
+      matchedArray.push(0);
+    }
+    console.log("uniquelist");
+    console.log(uniqueList);
+    uniqueList.forEach(gemLoc => {
+      // matchedArray[this.searchState.level[gemLoc[0]][gemLoc[1]].gemId]++;
+      let gemId = this.searchState.level[gemLoc[0]][gemLoc[1]].gemId;
+      console.log("gemLoc");
+      console.log(gemLoc);
+      let index = this.getGemIndex(gemId);
+      let gemType = this.state.gems[index].gemType;
+      console.log("gemType");
+      console.log(gemType);
+      matchedArray[gemType]++;
+    });
+    console.log("matchedArray");
+    console.log(matchedArray);
+    matchedArray.forEach(type => {
+      console.log("type");
+      console.log(type);
+      if (type)
+        score = score + (type - 2) * 15 * this.searchState.consecutiveMatches;
+      console.log("consecutiveMatches");
+      console.log(this.searchState.consecutiveMatches);
+    });
+    this.setState({ score: score });
+  };
+
+  loadHandler = () => {
+    this.setState({ loaded: true });
+    console.log("loadHandler called!");
+  };
+
   render() {
-    console.log("rendering . . . ");
     let gemArray = this.state.displayGems ? this.initializeGems() : null;
     // let gemArray = this.initializeGems();
     let checkerboard = this.drawCheckerboard();
@@ -968,49 +1017,55 @@ class Game extends Component {
       }, 3000);
     }
 
+    let spinner = this.state.loaded ? null : <Spinner />;
+
     return (
       <div>
-        {noMoves}
-        <div
-          style={{
-            backgroundImage: "url('" + Background_Image + "')",
-            backgroundSize: "cover",
-            backgroundPosition: "85%",
-            backgroundRepeat: "no-repeat",
-            width:
-              // this.state.marginLeft +
-              // 2 * this.state.margin +
-              // this.state.width * this.state.tileSize,
-              this.state.tileSize * this.state.width * 1.5,
-            height:
-              this.state.margin * 2 + this.state.height * this.state.tileSize
-          }}
-          className={classes.gameContainer}
-        >
-          <UIContainer
-            width={0.5 * this.state.tileSize * this.state.width - 20}
+        {spinner}
+        <Preloader loadHandler={this.loadHandler} />
+        <div style={{ display: this.state.loaded ? "block" : "none" }}>
+          {noMoves}
+          <div
+            style={{
+              backgroundImage: "url('" + Background_Image + "')",
+              backgroundSize: "cover",
+              backgroundPosition: "85%",
+              backgroundRepeat: "no-repeat",
+              width:
+                // this.state.marginLeft +
+                // 2 * this.state.margin +
+                // this.state.width * this.state.tileSize,
+                this.state.tileSize * this.state.width * 1.5,
+              height:
+                this.state.margin * 2 + this.state.height * this.state.tileSize
+            }}
+            className={classes.gameContainer}
           >
-            <Score val={0} />
-            <Button_Container
+            <UIContainer
               width={0.5 * this.state.tileSize * this.state.width - 20}
             >
-              <Button clickHandler={this.hintHandler} top={0}>
-                Hint
-              </Button>
-              <Button clickHandler={this.resetHandler} bottom={0}>
-                Reset
-              </Button>
-            </Button_Container>
-          </UIContainer>
-          <div
-            className={classes.tilesContainer}
-            style={{
-              width: this.state.width * this.state.tileSize + "px",
-              height: this.state.height * this.state.tileSize + "px"
-            }}
-          >
-            {checkerboard}
-            {gemArray}
+              <Score val={this.state.score} />
+              <Button_Container
+                width={0.5 * this.state.tileSize * this.state.width - 20}
+              >
+                <Button clickHandler={this.hintHandler} top={0}>
+                  Hint
+                </Button>
+                <Button clickHandler={this.resetHandler} bottom={0}>
+                  Reset
+                </Button>
+              </Button_Container>
+            </UIContainer>
+            <div
+              className={classes.tilesContainer}
+              style={{
+                width: this.state.width * this.state.tileSize + "px",
+                height: this.state.height * this.state.tileSize + "px"
+              }}
+            >
+              {checkerboard}
+              {gemArray}
+            </div>
           </div>
         </div>
       </div>
