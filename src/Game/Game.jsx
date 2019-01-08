@@ -24,7 +24,7 @@ class Game extends Component {
     marginLeft: 0,
     activeTile: false, //contains 2d index of which tile is active
     clickHandlerActive: false, //true means animation is in progress
-    newGemId: 64, //gemId used for the next newly created gem during the game, increments for every new gem
+    newGemId: 0, //gemId used for the next newly created gem during the game, increments for every new gem
     matchedOnLevel: [], //2d coordinate of matched gems
     displayGems: false,
     animate: false,
@@ -66,7 +66,7 @@ class Game extends Component {
     let checkerboard = [];
     let matchedRow = [];
     let matchedOnLevel = [];
-    let k = 0;
+    let k = this.state.newGemId;
     let gems = [];
     for (let i = 0; i < this.state.height; i++) {
       row = [];
@@ -95,6 +95,7 @@ class Game extends Component {
       matchedOnLevel.push(matchedRow);
     }
     if (constructor) {
+      this.state.newGemId = k;
       this.searchState.level = level;
       this.state.gems = gems;
       this.state.checkerboard = checkerboard;
@@ -108,6 +109,7 @@ class Game extends Component {
       this.searchState.level = level;
       this.setState(
         {
+          newGemId: k,
           gems: gems,
           checkerboard: checkerboard,
           marginLeft: marginLeft,
